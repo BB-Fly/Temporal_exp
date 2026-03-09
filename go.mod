@@ -1,4 +1,4 @@
-module Temporal_exp
+module temporal-exp
 
 go 1.25.0
 
