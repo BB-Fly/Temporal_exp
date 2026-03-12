@@ -11,6 +11,7 @@ import (
 	greeting "temporal-exp/src/greating/workflow"
 	mock "temporal-exp/src/mock"
 	"temporal-exp/src/models"
+	prelock "temporal-exp/src/prelock/workflow"
 	schedule "temporal-exp/src/schedule/workflow"
 
 	"go.temporal.io/sdk/client"
@@ -30,6 +31,9 @@ func main() {
 	} else if len(os.Args) > 1 && os.Args[1] == "batch" {
 		// 批量运行班次推荐工作流
 		runBatchScheduleWorkflows(c)
+	} else if len(os.Args) > 1 && os.Args[1] == "prelock" {
+		// 运行预锁库存工作流
+		runPreLockWorkflow(c)
 	} else {
 		// 运行问候工作流
 		runGreetingWorkflow(c)
@@ -138,4 +142,24 @@ func runBatchScheduleWorkflows(c client.Client) {
 	// 等待所有工作流执行完成
 	wg.Wait()
 	log.Println("All workflow executions completed")
+}
+
+func runPreLockWorkflow(c client.Client) {
+	options := client.StartWorkflowOptions{
+		ID:        "prelock-seats-workflow",
+		TaskQueue: "my-task-queue",
+	}
+
+	we, err := c.ExecuteWorkflow(context.Background(), options, prelock.PreLockSeatsWorkflow)
+	if err != nil {
+		log.Fatalln("Unable to execute workflow", err)
+	}
+	log.Println("Started workflow", "WorkflowID", we.GetID(), "RunID", we.GetRunID())
+
+	var result error
+	err = we.Get(context.Background(), &result)
+	if err != nil {
+		log.Fatalln("Unable get workflow result", err)
+	}
+	log.Println("Workflow completed successfully")
 }
