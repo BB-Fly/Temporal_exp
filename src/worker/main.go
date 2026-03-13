@@ -4,10 +4,10 @@ import (
 	"log"
 	greeting_a "temporal-exp/src/greating/activity"
 	greeting_w "temporal-exp/src/greating/workflow"
-	schedule_a "temporal-exp/src/schedule/activity"
-	schedule_w "temporal-exp/src/schedule/workflow"
 	prelock_a "temporal-exp/src/prelock/activity"
 	prelock_w "temporal-exp/src/prelock/workflow"
+	schedule_a "temporal-exp/src/schedule/activity"
+	schedule_w "temporal-exp/src/schedule/workflow"
 
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/worker"
